@@ -7,7 +7,7 @@ const app = express()
 
 
 app.use(bodyParser.json())
-
+mongoose.set('strictQuery', true)
 
 mongoose.connect("mongodb+srv://pritamsam1:Pritamsam1@project.383arvg.mongodb.net/project", {
        useNewUrlParser: true

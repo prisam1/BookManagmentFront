@@ -49,7 +49,7 @@ const createuser = async function (req, res) {
            
         }
         const newUser = await user.create(obj);
-        return res.status(201).send({message: 'New User created successfully', data: newUser })
+        return res.status(201).send({message: 'New Teacher created successfully', data: newUser })
 
 }
 

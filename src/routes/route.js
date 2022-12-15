@@ -12,9 +12,9 @@ router.post("/register",createuser)
 router.post("/login", login)
 
 router.post("/createstudent",authentication,createstudent)
-router.put("/user/:userId",authentication,updateStudent)
-router.get("/getStudent/:userId",authentication,getStudent)
-router.delete("/studentdelete/:userId",authentication,studentdelete)
+router.put("/user",authentication,updateStudent)
+router.get("/getStudent",authentication,getStudent)
+router.delete("/studentdelete",authentication,studentdelete)
 
 
  
