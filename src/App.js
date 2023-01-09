@@ -1,30 +1,33 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+import RegisterForm from "./components/Signup"
+import Login from './components/Login'
+import Home from './components/home'
+import Dashboard from './components/dashBoard'
+import GetBooks from './components/getBooks'
+import GetBookByID from "./components/getBookById"
+import {
 
-import Login from './components/Login';
-import Signup from './components/Signup';
 
-const App = () => {
-	return (
-		
-			<div className='container'>
-				<h1 className='mt-3'>Signup</h1>
-				<div className='row mt-3'>
-					<div className='col-sm'>
-						<Signup />
-					</div>
-								
-				</div>
-				<h3 className='mt-3'>Login</h3>
-				<div className='row '>
-					<div className='col-sm'>
-						<Login />
-					</div>
-				</div>
-				
-				</div>
-			
-	);
-};
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom"
+function App() {
+  return (
+    <>
+     <BrowserRouter>
+     <Routes>
+     <Route path="/" element={<Home />} />
+     <Route path="/register" element={<RegisterForm />}/>
+     <Route path="/login" element={<Login />} />
+     <Route path="/dashboard" element={<Dashboard />} />
+     <Route path="/dashboard/books" element={<GetBooks />} />
+     <Route path="/dashboard/books/:bookId" element={<GetBookByID />} />
+     </Routes>
+     </BrowserRouter>
 
-export default App;
+       </>
+  )
+}
+
+export default App

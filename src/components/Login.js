@@ -1,46 +1,123 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react';
-const Login = () => {
+import React from "react"
+import axios from "axios"
+import Container from "react-bootstrap/Container"
+import Nav from "react-bootstrap/Nav"
+import Navbar from "react-bootstrap/Navbar"
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate()
-    const userhandle = async () => {
-        let result = await fetch("http://localhost:5000/userlogin", {
-            method: "Post",
-            body: JSON.stringify({ email, password }),
-            headers: {
-                'Content-Type': 'application/json',
 
-            }
-        })
-        result = await result.json()
-
-        console.log(result)
-        JSON.stringify(result)
-    
-        if (result.auth) {
-            localStorage.setItem('user', JSON.stringify(result.user))
-            localStorage.setItem('token', JSON.stringify(result.auth))
-
-            navigate('/')
-        } else {
-            alert("error")
-        }
-
+class Login extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      email: "",
+      password: "",
+      formDisabled: false,
     }
+  }
+  handleFormLogin(event) {
+    const { email, password } = this.state
+    event.preventDefault()
+
+    this.setState({
+      formDisabled: true,
+    })
+    axios
+      .post("http://localhost:8000/login", {
+        email,
+        password,
+      })
+      .then((response) => {
+        console.log("response", response.data)
+        this.setState({
+          formDisabled: false,
+        })
+        this.setState({
+          email: "",
+          password: "",
+        })
+        alert("login Successful!")
+       
+        
+       
+      })
+      .catch(err=>{
+        console.log(err.message)
+      })
+  }
+  render() {
     return (
-        <>
-            <div className="container-fluid  ">
-                <div className="form-group w-25 mx-auto">
-                    <input type="email" className="form-control mt-3 p-2" value={email} onChange={(e) => setEmail(e.target.value)} required id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                    <input type="password" className="form-control mt-3" required value={password} onChange={(e) => setPassword(e.target.value)} id="exampleInputPassword1" placeholder="Password" />
-                
-                <button type="submit" onClick={userhandle} className="btn btn-primary w-100 mt-3">Submit</button>   
-                </div>
-            </div>
-        </>
+      <div>
+        <Navbar bg="primary" variant="dark">
+          <Container>
+            <Navbar.Brand href="/">Encode</Navbar.Brand>
+            <Nav className="d-flex">
+              <Nav.Link href="/">Home</Nav.Link>
+              <Nav.Link href="/register">Signup</Nav.Link>
+              <Nav.Link href="/login">Login</Nav.Link>
+            </Nav>
+          </Container>
+        </Navbar>
+        <br />
+        <form
+          method="POST"
+          onSubmit={(e) => this.handleFormLogin(e)}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            left: "36%",
+            alignContent: "center",
+            width: "400px",
+            padding: "40px",
+            backgroundColor: "#eee",
+          }}
+        >
+          <div class="mb-3">
+            <label htmlFor="exampleInputEmail1" class="form-label">
+              Email address
+            </label>
+            <input
+              type="email"
+              class="form-control"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              value={this.state.email}
+              onChange={(e) => {
+                this.setState({
+                  email: e.target.value,
+                })
+              }}
+            />
+          </div>
+          <div class="mb-3">
+            <label htmlFor="exampleInputPassword1" class="form-label">
+              Password
+            </label>
+            <input
+              type="password"
+              class="form-control"
+              id="exampleInputPassword1"
+              value={this.state.password}
+              onChange={(e) => {
+                this.setState({
+                  password: e.target.value,
+                })
+              }}
+            />
+          </div>
+          <button
+            disabled={this.state.formDisabled}
+            type="submit"
+            class="btn btn-success"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     )
+  }
 }
-export default Login;
+
+
+
+export default Login

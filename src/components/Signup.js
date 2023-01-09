@@ -1,52 +1,160 @@
-import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom'
-const Signup = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate()
-    const forsubmit = async () => {
+import React from "react"
+import axios from "axios"
+import Container from 'react-bootstrap/Container'
+import Nav from 'react-bootstrap/Nav'
+import Navbar from 'react-bootstrap/Navbar'
 
-
-        let result = await fetch("http://localhost:5000/user", {
-            method: "Post",
-            body: JSON.stringify({ name, email, password }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        result = await result.json()
-
-        localStorage.setItem('user',JSON.stringify(result.user))
-        localStorage.setItem('token',JSON.stringify(result.auth))
-        navigate('/login')
-
+class RegisterForm extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      name: "",
+      phone: 0,
+      email:"",
+      password: "",
+      formDisabled: false,
     }
-
+  }
+  handleFormSubmit(event) {
+    const { name, phone, email, password } = this.state
+    event.preventDefault()
+  
+    this.setState({
+      formDisabled: true,
+    })
+    axios
+      .post("http://localhost:8000/register", {
+        name,
+        phone,
+        email,
+        password,
+      })
+      .then((response) => {
+        console.log("response", response.data)
+        this.setState({
+          formDisabled: false,
+        })
+        this.setState({
+          name: "",
+          phone: "",
+          email:'',
+          password: "",
+        })
+        alert("Registration Successful!")
+      })
+  }
+  render() {
     return (
-        <>
-            <div className="container w-25">
+      <div>
+          <Navbar bg="primary" variant="dark">
+        <Container>
+          <Navbar.Brand href="/">Encode</Navbar.Brand>
+          <Nav className="d-flex">
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/register">Signup</Nav.Link>
+            <Nav.Link href="/login">Login</Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar><br />
+        <h2 className="text1">RegisterForm </h2>
+        <form className="card-box" method="POST"
+          onSubmit={(event) => this.handleFormSubmit(event)}
+          style={{
+            display:"flex",
+            flexDirection:"column",
+            position:"relative",
+            left:"36.5%",
+            alignContent:"center",
+            width:"400px",
+            padding: "40px",
+            backgroundColor: "#eee",
+          }}
+        >
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">
+              Name
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="name"
+              placeholder="your name"
+              value={this.state.name}
+              onChange={(e) => {
+                this.setState({name: e.target.value,})
+              }}
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="phone" className="form-label">
+              phone
+            </label>
+            <input
+              type="number"
+              className="form-control"
+              id="phone"
+              placeholder="your phone"
+              value={this.state.phone}
+              onChange={(e) => {
+                this.setState({
+                  phone: e.target.value,
+                })
+              }}
+            />
+          </div>
 
-                <div className="form-group mt-2">
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              email
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              placeholder="your email"
+              value={this.state.email}
+              onChange={(e) => {
+                this.setState({
+                  email: e.target.value,
+                })
+              }}
+            />
+          </div>
 
-                    <input type="text" className="form-control" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Enter Name" />
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              placeholder="your password"
+              value={this.state.password}
+              onChange={(e) => {
+                this.setState({
+                  password: e.target.value,
+                })
+              }}
+            />
+          </div>
 
-                </div>
-                <div className="form-group mt-2">
+          <button
+            disabled={this.state.formDisabled}
+            type="submit"
+            className="btn btn-primary mb-3"
+          >
+            Submit
+          </button>
 
-                    <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
-                    <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-                </div>
-                <div className="form-group mt-2">
+          {this.state.formDisabled && (
+            <p>please wait</p>
+          )}
+        </form>
 
-                    <input type="password" className="form-control" required value={password} onChange={(e) => setPassword(e.target.value)} id="exampleInputPassword1" placeholder="Password" />
-                </div>
-
-                <button type="submit" onClick={forsubmit} className="btn btn-primary w-100 mt-2">Submit</button>
-
-            </div>
-
-        </>
+      </div>
     )
+  }
 }
-export default Signup;
+
+export default RegisterForm
